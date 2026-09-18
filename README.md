@@ -1,51 +1,47 @@
-# 港美股研究报告工具
+<div align="center">
 
-[English](README_EN.md)
+# 港美股研究报告
 
-一个面向港股和美股的自动化研究与报告项目。它会把行情、公司公告、宏观数据和新闻整理成每日复盘、个股决策看板和机会报告，并按需输出 Markdown、HTML、PDF 或推送消息。
+> 基于 [daily_stock_analysis](https://github.com/ZhuLinsen/daily_stock_analysis) 的港股 / 美股研究增强分支，重点改进官方来源核验、机会评分、交易卡和报告交付。
 
-## 项目定位
+[**本仓库改动**](#-本仓库改了什么) · [**报告效果**](#-报告效果) · [**快速开始**](#-快速开始) · [**发布范围**](#-当前发布范围)
 
-本项目基于 [daily_stock_analysis](https://github.com/ZhuLinsen/daily_stock_analysis) 的分析与通知能力开发。原项目覆盖更多市场，并提供完整的 Web、桌面端和 API 工作台；本仓库把范围收敛到港股和美股，重点放在研究报告的深度、官方来源核验和稳定交付。
+简体中文 | [English](README_EN.md)
 
-主要差异：
+</div>
 
-- 只保留港股和美股链路，减少与目标市场无关的配置和运行负担
-- 港股重点核验 HKEX 公告、董事会日历、南向资金和港元流动性
-- 美股重点核验 SEC 文件、财报窗口、公司指引和美国宏观事件
-- 美股可选接入 Reddit、X 和 Polymarket 社交舆情，并将摘要写入分析上下文和正式报告
-- 在基础决策看板之上增加机会评分、数据完整度、信号置信度和标准化交易卡
-- 记录跨交易日状态，并对历史 Top 5 信号做 1/5/20 日验证
-- 将简短推送与完整研究报告分开，方便在手机上先看结论、需要时再读 PDF
+## ✨ 本仓库改了什么
 
-## 数据与研究范围
+上游项目已经提供行情获取、模型调用、新闻搜索、决策看板和多渠道通知。本仓库不重复介绍这些通用能力，主要记录港美股报告链路的新增和调整。
 
-- 港股数据：长桥行情、HKEX 公告、董事会日历
-- 美股数据：Yahoo Finance、Finnhub、SEC EDGAR
-- 宏观事件：Nasdaq 美国经济日历、BLS 日程，以及 CPI、PPI、就业和央行事件
-- 市场分析：指数、板块轮动、市场状态、主线方向和次日观察重点
-- 个股分析：技术结构、量价、基本面、新闻、风险警报和催化因素
-- 美股舆情：Reddit、X、Polymarket 的热度、情绪、提及量和预测市场活动（可选）
-- 结构化研究：事件闸门、机会评分、交易卡、信号置信度和跨交易日状态
-- 报告输出：Markdown、HTML、PDF
+| 改动 | 内容 |
+| --- | --- |
+| 港股专项数据 | 接入 HKEX 公告、董事会日历、南向资金、港元流动性及相关市场变量 |
+| 美股官方来源 | 接入 SEC EDGAR、财报窗口、公司指引、Nasdaq 经济日历和 BLS 日程 |
+| 社交舆情 | 可选接入 Reddit、X、Polymarket；仅用于美股，并写入分析上下文和正式报告 |
+| 机会评分 | 在基础评分之外增加机会强度、数据完整度、信号置信度和执行成熟度 |
+| 标准化交易卡 | 给出触发条件、失效条件、止损和目标位；证据不足时只保留观察结论 |
+| 跨日状态 | 记录事件和信号在后续交易日的变化，避免每天从零开始判断 |
+| 历史验证 | 跟踪 Top 5 信号的 1/5/20 日表现、最大有利/不利波动及目标/止损命中 |
+| 报告交付 | 即时通讯渠道发送简报，邮件和附件保留完整 PDF；同一报告不会重复发送 |
 
-## 报告内容与推送效果
+基础模型、行情源、搜索服务和通知渠道沿用上游实现，完整说明见 [原项目 README](https://github.com/ZhuLinsen/daily_stock_analysis/blob/main/README.md)。
 
-### 决策看板
-
-每只股票会给出核心结论、操作建议、评分和趋势，并整理关键点位、风险警报、利好催化和最新动态。美股在配置舆情数据源后，还会加入 Reddit、X 和 Polymarket 摘要。报告不是简单罗列新闻，而是把数据和事件放到同一个决策框架中。
+## 📱 报告效果
 
 ### 港美股复盘
 
-报告会概括当日市场状态、主线方向、指数与板块表现，并列出需要继续跟踪的宏观事件和公司事件。港股和美股使用各自的数据源与市场规则，不共用一套泛化模板。
+报告先说明当日市场状态、主线方向、指数与板块表现，再整理未来宏观事件、财报窗口和需要继续核验的公司事件。港股和美股使用各自的数据源与市场规则。
 
 ### 机会评分与交易卡
 
-结构化报告会显示数据完整度、信号置信度和执行成熟度。满足条件的标的会给出触发条件、失效条件、止损和目标位；证据不足或信号冲突时，只保留观察结论。
+每只股票保留核心结论、评分、趋势、风险警报和催化因素，并补充数据完整度、信号置信度与执行状态。只有数据和结构同时满足条件时，才会生成可执行交易卡。
 
-### 推送摘要
+### 美股社交舆情
 
-不同渠道会收到适合其阅读方式的内容：即时通讯渠道以简报和关键风险为主，邮件和附件保留完整报告。典型内容结构如下：
+配置舆情数据源后，报告会显示 Reddit、X、Polymarket 的热度、情绪、提及量和预测市场活动。舆情用于补充事件背景，不会单独决定交易结论。
+
+### 推送摘要结构
 
 ```text
 港股/美股复盘及机会日报｜日期｜市场状态
@@ -57,54 +53,43 @@
 未来宏观事件 / 财报窗口 / 官方公告核验
 ```
 
-支持的推送渠道：
+支持 Telegram、邮件、企业微信、飞书、钉钉、Discord、Slack、Pushover、PushPlus、Server酱3、AstrBot 和自定义 Webhook。
 
-- Telegram、邮件
-- 企业微信、飞书、钉钉机器人
-- Discord、Slack
-- Pushover、PushPlus、Server酱3
-- AstrBot、自定义 Webhook
+## 🚀 快速开始
 
-渠道字段见 `.env.notifications.example`。系统只会使用已经完成配置的渠道。
+### 运行环境
 
-## 运行环境
+Python 主程序支持 Windows、Linux 和 macOS。`run_hk_once.sh`、`run_us_once.sh` 依赖 Bash、`flock` 和 GNU 工具，主要用于 Linux 服务器；Windows 和 macOS 可以直接运行 Python 命令或使用系统自带的定时任务。
 
-- Python 3.10 或更高版本
-- Python 主程序可在 Windows、Linux 和 macOS 上运行
-- `run_hk_once.sh`、`run_us_once.sh` 使用 Bash、`flock` 和 GNU 工具，主要面向 Linux 服务器
-- Windows 可以使用 PowerShell、任务计划程序或直接运行 Python 命令
-- macOS 可以直接运行 Python 主程序；如需使用 Bash 自动化脚本，需要补齐 GNU 工具兼容环境
-- PDF 输出依赖 WeasyPrint，系统依赖安装方式见 [官方文档](https://doc.courtbouillon.org/weasyprint/stable/first_steps.html)
+PDF 输出依赖 WeasyPrint，系统依赖安装方式见 [官方文档](https://doc.courtbouillon.org/weasyprint/stable/first_steps.html)。
 
-## 安装
+### 安装
 
-### Linux / macOS
+Linux / macOS：
 
 ```bash
 git clone https://github.com/Ir1svanquish/hk-us-market-research.git
 cd hk-us-market-research
-
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
 ```
 
-### Windows PowerShell
+Windows PowerShell：
 
 ```powershell
 git clone https://github.com/Ir1svanquish/hk-us-market-research.git
 Set-Location hk-us-market-research
-
 py -3.10 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 ```
 
-## 配置
+### 配置
 
-港股和美股使用独立的环境文件。
+仓库中提交的 `.env.example`、`.env.hk.example`、`.env.us.example` 和 `.env.notifications.example` 是**不含真实凭据的配置模板**，保留它们是为了说明可用字段。
 
-Linux / macOS：
+复制模板后再填写自己的配置：
 
 ```bash
 cp .env.hk.example .env.hk
@@ -118,71 +103,55 @@ Copy-Item .env.hk.example .env.hk
 Copy-Item .env.us.example .env.us
 ```
 
-常用配置项：
+填写后的 `.env`、`.env.hk`、`.env.us` 以及本地密钥文件已被 `.gitignore` 排除，**不要手动强制提交**。
+
+本仓库新增或重点使用的配置：
 
 | 配置 | 用途 |
 | --- | --- |
-| `STOCK_LIST` | 股票池，多个代码用逗号分隔 |
-| `LONGBRIDGE_APP_KEY` / `LONGBRIDGE_APP_SECRET` / `LONGBRIDGE_ACCESS_TOKEN` | 长桥行情 |
-| `FINNHUB_API_KEYS` | 美股财报和一致预期 |
-| `TUSHARE_TOKEN` | 港股基本面备用数据 |
-| `LLM_CHANNELS` / `LITELLM_MODEL` | 模型渠道和模型名称 |
-| `TAVILY_API_KEYS` / `SERPAPI_API_KEYS` | 新闻搜索 |
-| `SOCIAL_SENTIMENT_API_KEY_FILE` | 美股 Reddit、X、Polymarket 舆情服务的本地密钥文件 |
-| `V2_HK_SYMBOLS` / `V2_US_SYMBOLS` | 结构化报告股票池 |
+| `V2_HK_SYMBOLS` / `V2_US_SYMBOLS` | 港股 / 美股结构化报告股票池 |
 | `V2_SEC_USER_AGENT` | SEC EDGAR 请求标识 |
+| `FINNHUB_API_KEYS` | 美股财报、预期与机构数据 |
+| `LONGBRIDGE_APP_KEY` / `LONGBRIDGE_APP_SECRET` / `LONGBRIDGE_ACCESS_TOKEN` | 港美股实时行情和估值字段 |
+| `SOCIAL_SENTIMENT_API_KEY_FILE` | 美股 Reddit、X、Polymarket 舆情服务的本地密钥文件 |
+| `LLM_CHANNELS` / `LITELLM_MODEL` | 模型渠道和模型名称 |
+| `TAVILY_API_KEYS` / `SERPAPI_API_KEYS` | 新闻搜索，可按需配置其他上游支持的搜索源 |
 
-完整示例见 `.env.example`、`.env.hk.example`、`.env.us.example` 和 `.env.notifications.example`。这些文件只提供字段示例，请把真实凭据保存在本地环境文件中，不要提交到仓库。
+### 运行
 
-## 运行
-
-基础分析在三个平台上都可以直接运行。
-
-Linux / macOS：
+基础分析：
 
 ```bash
 cp .env.hk .env
 python main.py --no-notify
 ```
 
-Windows PowerShell：
-
-```powershell
-Copy-Item .env.hk .env
-python main.py --no-notify
-```
-
-内置定时模式：
-
-```bash
-python main.py --schedule
-```
-
-Linux 服务器可以直接运行完整港股或美股流程：
+Linux 服务器完整流程：
 
 ```bash
 ./run_hk_once.sh
 ./run_us_once.sh
 ```
 
-这两个脚本会依次生成基础分析和结构化报告，并使用本地运行标记避免同一交易日重复处理。Windows 或 macOS 也可以在基础报告生成后直接调用结构化报告模块：
+完整流程会先生成基础分析，再生成结构化报告，并通过本地状态避免重复处理和重复发送。
+
+Windows 或 macOS 可在基础报告生成后直接运行结构化报告模块：
 
 ```bash
 python -m v2.shadow_delivery --market hk --date YYYY-MM-DD --env-file .env.hk --delivery-mode v2
 ```
 
-美股运行时把 `hk` 和 `.env.hk` 分别改为 `us` 和 `.env.us`。
+美股运行时将 `hk` 和 `.env.hk` 改为 `us` 和 `.env.us`。
 
-## 当前发布边界
+## 📦 当前发布范围
 
-当前仓库以命令行分析、定时报告和多渠道推送为主：
+当前仓库发布的是命令行分析、定时报告和多渠道推送链路：
 
-- 决策看板、市场复盘、结构化报告、社交舆情和通知渠道已经接入主流程
-- Agent 分析框架和 11 种内置策略已经实现，可由分析链路调用
-- `/ask`、`/chat`、`/research` 等 Bot 命令核心代码已保留，但没有附带 Telegram、Discord 等平台的常驻 Bot 进程
-- 图片识股、CSV/Excel 解析、名称补全和持仓导入服务已有核心代码，但当前版本没有提供完整的 Web/API 使用入口
-- 当前版本不包含原项目的 Web/桌面工作台、FastAPI 服务、Docker 部署和 GitHub Actions 工作流，因此不把这些列为可直接使用的功能
-- 当前公开说明只承诺经过验证的港股和美股链路；继承的 A 股和 ETF 代码不属于本仓库现阶段的主要发布范围
+- 已接入主流程：决策看板、港美股复盘、官方来源核验、机会评分、交易卡、社交舆情和报告推送
+- 已保留核心代码：Agent 分析框架、11 种内置策略、图片识股、CSV/Excel 解析、名称补全和持仓导入
+- 暂未提供完整入口：Telegram/Discord 常驻 Bot、Web/API 智能导入界面
+- 未包含：上游 Web/桌面工作台、FastAPI 服务、Docker 部署和 GitHub Actions 工作流
+- 当前文档只承诺经过验证的港股和美股链路；继承的 A 股和 ETF 代码不属于主要发布范围
 
 ## 测试
 
@@ -191,25 +160,13 @@ python -m pytest tests -q
 python -m pytest v2/tests -q
 ```
 
-## 项目结构
+## 上游项目与许可
 
-```text
-.
-├── main.py              # 基础分析入口
-├── data_provider/       # 行情和基本面数据源
-├── src/                 # 分析、报告与通知
-├── strategies/          # 可配置研究策略
-├── templates/           # 报告模板
-├── v2/                  # 事件、评分和交易卡
-├── tests/               # 基础链路测试
-├── run_hk_once.sh       # 港股完整流程（Linux）
-└── run_us_once.sh       # 美股完整流程（Linux）
-```
+本仓库保留上游 MIT License 和原作者版权声明。通用功能、完整 Web/API 部署及其他市场支持请参考：
 
-## 说明
+- [ZhuLinsen/daily_stock_analysis](https://github.com/ZhuLinsen/daily_stock_analysis)
+- [原项目完整 README](https://github.com/ZhuLinsen/daily_stock_analysis/blob/main/README.md)
 
-本项目生成的内容用于信息整理和研究，不构成投资建议。第三方数据源可能存在延迟、限流或字段调整，正式使用前请核对数据口径和授权条款。
+## 免责声明
 
-## License
-
-[MIT](LICENSE)
+本项目仅用于信息整理和研究，不构成投资建议。第三方数据可能存在延迟、限流或字段变化，正式使用前请核对数据口径和授权条款。
