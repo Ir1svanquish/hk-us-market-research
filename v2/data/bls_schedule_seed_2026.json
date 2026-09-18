@@ -1,0 +1,78 @@
+{
+  "verified_at": "2026-08-21",
+  "source": "U.S. Bureau of Labor Statistics official release schedule and current news releases",
+  "events": [
+    {
+      "event_type": "nonfarm_payrolls",
+      "release_date": "2026-09-04",
+      "release_time": "08:30 AM",
+      "reference_period": "August 2026",
+      "title": "Employment Situation for August 2026",
+      "source_url": "https://www.bls.gov/schedule/2026/09_sched_list.htm"
+    },
+    {
+      "event_type": "ppi",
+      "release_date": "2026-09-10",
+      "release_time": "08:30 AM",
+      "reference_period": "August 2026",
+      "title": "Producer Price Index for August 2026",
+      "source_url": "https://www.bls.gov/schedule/2026/09_sched_list.htm"
+    },
+    {
+      "event_type": "cpi",
+      "release_date": "2026-09-11",
+      "release_time": "08:30 AM",
+      "reference_period": "August 2026",
+      "title": "Consumer Price Index for August 2026",
+      "source_url": "https://www.bls.gov/schedule/2026/09_sched_list.htm"
+    },
+    {
+      "event_type": "nonfarm_payrolls",
+      "release_date": "2026-10-02",
+      "release_time": "08:30 AM",
+      "reference_period": "September 2026",
+      "title": "Employment Situation for September 2026",
+      "source_url": "https://www.bls.gov/schedule/2026/10_sched_list.htm"
+    },
+    {
+      "event_type": "cpi",
+      "release_date": "2026-10-14",
+      "release_time": "08:30 AM",
+      "reference_period": "September 2026",
+      "title": "Consumer Price Index for September 2026",
+      "source_url": "https://www.bls.gov/schedule/2026/10_sched_list.htm"
+    },
+    {
+      "event_type": "ppi",
+      "release_date": "2026-10-15",
+      "release_time": "08:30 AM",
+      "reference_period": "September 2026",
+      "title": "Producer Price Index for September 2026",
+      "source_url": "https://www.bls.gov/schedule/2026/10_sched_list.htm"
+    },
+    {
+      "event_type": "nonfarm_payrolls",
+      "release_date": "2026-11-06",
+      "release_time": "08:30 AM",
+      "reference_period": "October 2026",
+      "title": "Employment Situation for October 2026",
+      "source_url": "https://www.bls.gov/schedule/2026/11_sched_list.htm"
+    },
+    {
+      "event_type": "cpi",
+      "release_date": "2026-11-10",
+      "release_time": "08:30 AM",
+      "reference_period": "October 2026",
+      "title": "Consumer Price Index for October 2026",
+      "source_url": "https://www.bls.gov/schedule/2026/11_sched_list.htm"
+    },
+    {
+      "event_type": "ppi",
+      "release_date": "2026-11-13",
+      "release_time": "08:30 AM",
+      "reference_period": "October 2026",
+      "title": "Producer Price Index for October 2026",
+      "source_url": "https://www.bls.gov/schedule/2026/11_sched_list.htm"
+    }
+  ]
+}
