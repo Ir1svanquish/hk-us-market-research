@@ -2,74 +2,53 @@
 
 # HK & US Market Research Reports
 
-> A Hong Kong and U.S. research-focused branch of [daily_stock_analysis](https://github.com/ZhuLinsen/daily_stock_analysis), with additional work on official-source checks, opportunity scoring, trade cards, and report delivery.
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-[**Changes in this repository**](#-changes-in-this-repository) · [**Report output**](#-report-output) · [**Quick start**](#-quick-start) · [**Release scope**](#-current-release-scope)
+> Collects market data, filings, macro releases, and news for Hong Kong and U.S. stocks, then builds daily market reviews and stock research reports with optional multi-channel delivery.
+
+[**Features**](#-features) · [**Quick Start**](#-quick-start) · [**Report Output**](#-report-output) · [**Configuration**](#-configuration)
 
 [简体中文](README.md) | English
 
 </div>
 
-## ✨ Changes in this repository
+Built on [daily_stock_analysis](https://github.com/ZhuLinsen/daily_stock_analysis), with changes for a Hong Kong and U.S. daily research workflow.
 
-The upstream project already provides market data, model routing, news search, decision dashboards, and multi-channel notifications. This README focuses on the Hong Kong and U.S. report changes made in this repository.
+## ✨ Features
 
-| Change | Details |
+| Capability | Details |
 | --- | --- |
-| Hong Kong market context | HKEX filings, board calendars, southbound flows, HKD liquidity, and related market variables |
-| U.S. official sources | SEC EDGAR, earnings windows, company guidance, the Nasdaq economic calendar, and BLS schedules |
-| Social sentiment | Optional Reddit, X, and Polymarket data for U.S. stocks, included in the analysis context and final report |
-| Opportunity scoring | Opportunity strength, data completeness, signal confidence, and execution readiness in addition to the base score |
-| Standardized trade cards | Trigger, invalidation, stop, and target levels; incomplete evidence produces a watch-only conclusion |
-| Cross-session state | Carries events and signals into later sessions instead of rebuilding every decision from scratch |
-| Historical validation | Tracks Top 5 signals over 1/5/20 days, including favorable/adverse movement and target/stop outcomes |
-| Report delivery | Short briefs for messaging channels and full PDFs for email or attachments, with idempotent delivery |
+| Daily research reports | Market state, prevailing themes, stock conclusions, scores, trends, risk alerts, and catalysts |
+| Hong Kong research | Longbridge quotes, HKEX filings, board calendars, southbound flows, and HKD liquidity |
+| U.S. research | Yahoo Finance, Finnhub, SEC EDGAR, earnings windows, and company guidance |
+| Macro events | Nasdaq U.S. economic calendar, BLS schedules, CPI, PPI, labor, and central-bank events |
+| Opportunity scoring | Data completeness, signal confidence, opportunity strength, and execution readiness |
+| Trade cards | Trigger, invalidation, stop, and target levels; incomplete evidence produces a watch-only conclusion |
+| Social sentiment | Optional Reddit, X, and Polymarket sentiment for U.S. stocks |
+| Historical validation | Tracks Top 5 signals over 1/5/20 days, favorable/adverse movement, and target/stop outcomes |
+| Report output | Markdown, HTML, PDF, and short mobile-friendly briefs |
+| Automated delivery | Local scheduling with Telegram, email, WeCom, Feishu, DingTalk, Discord, Slack, and other channels |
 
-Base model providers, market-data sources, search services, and notification channels follow the upstream implementation. See the [upstream README](https://github.com/ZhuLinsen/daily_stock_analysis/blob/main/README.md) for the broader feature set.
+### Data and services
 
-## 📱 Report output
+| Type | Supported |
+| --- | --- |
+| Models | OpenAI-compatible providers, DeepSeek, Qwen, Claude, Gemini, Ollama, and LiteLLM multi-channel routing |
+| Market data | Longbridge, YFinance, Finnhub, AkShare, Tushare, Pytdx, Baostock, TickFlow |
+| Official sources | HKEX, SEC EDGAR, Nasdaq, BLS |
+| News search | Anspire, SerpAPI, Tavily, Bocha, Brave, MiniMax, SearXNG |
+| Social sentiment | Reddit, X, and Polymarket for U.S. stocks (optional) |
+| Delivery | Telegram, email, WeCom, Feishu, DingTalk, Discord, Slack, Pushover, PushPlus, ServerChan 3, AstrBot, custom webhooks |
 
-### Hong Kong and U.S. market review
+## 🚀 Quick Start
 
-The report starts with market state, prevailing themes, index and sector performance, then lists upcoming macro events, earnings windows, and company events that still require confirmation. Hong Kong and U.S. reports use market-specific sources and rules.
-
-### Opportunity scores and trade cards
-
-Each stock retains the core conclusion, score, trend, risk alerts, and catalysts, with additional data-completeness, signal-confidence, and execution-state checks. A trade card is generated only when both the evidence and price structure meet the required conditions.
-
-### U.S. social sentiment
-
-When configured, the report includes Reddit, X, and Polymarket buzz, sentiment, mention counts, and prediction-market activity. Social sentiment provides event context; it never determines the trading conclusion by itself.
-
-### Delivery brief structure
-
-```text
-HK/US Market Review and Opportunities | Date | Market State
-
-Market State / Main Theme / Session Plan
-Top Opportunities / Score / Data Completeness / Signal Confidence
-Trigger / Invalidation / Stop / Target
-Risk Alerts / Catalysts / Latest Developments
-Upcoming Macro Events / Earnings Windows / Filing Checks
-```
-
-Supported channels include Telegram, email, WeCom, Feishu, DingTalk, Discord, Slack, Pushover, PushPlus, ServerChan 3, AstrBot, and custom webhooks.
-
-## 🚀 Quick start
-
-### Platforms
-
-The Python application runs on Windows, Linux, and macOS. `run_hk_once.sh` and `run_us_once.sh` depend on Bash, `flock`, and GNU utilities and are intended mainly for Linux servers. Windows and macOS users can run the Python commands directly or use the operating system scheduler.
-
-PDF output uses WeasyPrint; see the [official installation guide](https://doc.courtbouillon.org/weasyprint/stable/first_steps.html) for platform-specific dependencies.
-
-### Installation
-
-Linux / macOS:
+### 1. Install
 
 ```bash
 git clone https://github.com/Ir1svanquish/hk-us-market-research.git
 cd hk-us-market-research
+
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
@@ -78,18 +57,12 @@ python -m pip install -r requirements.txt
 Windows PowerShell:
 
 ```powershell
-git clone https://github.com/Ir1svanquish/hk-us-market-research.git
-Set-Location hk-us-market-research
 py -3.10 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 ```
 
-### Configuration
-
-The committed `.env.example`, `.env.hk.example`, `.env.us.example`, and `.env.notifications.example` files are **credential-free templates**. They are intentionally kept in the repository to document the available fields.
-
-Copy the templates before adding local settings:
+### 2. Configure
 
 ```bash
 cp .env.hk.example .env.hk
@@ -103,23 +76,11 @@ Copy-Item .env.hk.example .env.hk
 Copy-Item .env.us.example .env.us
 ```
 
-Filled `.env`, `.env.hk`, `.env.us`, and local key files are excluded by `.gitignore`. **Do not force-add them to Git.**
+The committed `.env*.example` files are blank templates and contain no credentials. Filled `.env`, `.env.hk`, `.env.us`, and local key files are not tracked by Git.
 
-Settings added or used heavily by this repository:
+### 3. Run
 
-| Variable | Purpose |
-| --- | --- |
-| `V2_HK_SYMBOLS` / `V2_US_SYMBOLS` | Hong Kong and U.S. structured-report universes |
-| `V2_SEC_USER_AGENT` | SEC EDGAR request identity |
-| `FINNHUB_API_KEYS` | U.S. earnings, expectations, and institutional data |
-| `LONGBRIDGE_APP_KEY` / `LONGBRIDGE_APP_SECRET` / `LONGBRIDGE_ACCESS_TOKEN` | Hong Kong and U.S. realtime and valuation fields |
-| `SOCIAL_SENTIMENT_API_KEY_FILE` | Local key file for U.S. Reddit, X, and Polymarket sentiment data |
-| `LLM_CHANNELS` / `LITELLM_MODEL` | Model channels and model name |
-| `TAVILY_API_KEYS` / `SERPAPI_API_KEYS` | News search; other upstream-supported providers can also be configured |
-
-### Running
-
-Base analysis:
+Test the base analysis without notifications:
 
 ```bash
 cp .env.hk .env
@@ -133,25 +94,55 @@ Complete Linux server workflows:
 ./run_us_once.sh
 ```
 
-The complete workflow builds the base analysis and structured report, then uses local state to prevent duplicate processing and delivery.
-
-On Windows or macOS, run the structured report module after the base report has been generated:
+Built-in scheduler:
 
 ```bash
-python -m v2.shadow_delivery --market hk --date YYYY-MM-DD --env-file .env.hk --delivery-mode v2
+python main.py --schedule
 ```
 
-For the U.S. workflow, replace `hk` and `.env.hk` with `us` and `.env.us`.
+The Python application runs on Windows, Linux, and macOS. The two `run_*_once.sh` scripts depend on Bash, `flock`, and GNU utilities and are intended mainly for Linux. Other platforms can run the Python commands directly or use the operating system scheduler.
 
-## 📦 Current release scope
+PDF output uses WeasyPrint; see the [official installation guide](https://doc.courtbouillon.org/weasyprint/stable/first_steps.html).
 
-This repository publishes the command-line analysis, scheduled-report, and multi-channel delivery path:
+## 📱 Report Output
 
-- Connected to the main pipeline: decision dashboards, HK/U.S. market reviews, official-source checks, opportunity scoring, trade cards, social sentiment, and report delivery
-- Core code retained: the Agent framework, 11 built-in strategies, image ticker extraction, CSV/Excel parsing, name completion, and portfolio import
-- No complete entry point yet: long-running Telegram/Discord Bot processes and the Web/API import interface
-- Not included: the upstream Web/desktop workspace, FastAPI service, Docker deployment, and GitHub Actions workflows
-- The documented and verified scope is Hong Kong and U.S. stocks; inherited A-share and ETF code is outside the primary release scope
+### Daily brief
+
+```text
+HK/US Market Review and Opportunities | Date | Market State
+
+Market State: range-bound / improving / risk-off
+Main Theme: the session's dominant theme and key tension
+Top Opportunities: score, data completeness, signal confidence
+Trade Conditions: trigger, invalidation, stop, target
+Event Watch: earnings windows, macro calendar, official filings
+Risk Notes: stock risks, market risks, and data gaps
+```
+
+### Stock research
+
+Each stock receives a core conclusion, suggested action, score, and trend, together with technical structure, price and volume, fundamentals, recent developments, risk alerts, and catalysts. U.S. reports also include Reddit, X, and Polymarket summaries when social sentiment is enabled.
+
+### Full report
+
+The full PDF includes the market review, opportunity ranking, stock research, event checks, and trade cards. Messaging channels receive a concise brief, while email and attachments retain the complete report.
+
+## ⚙️ Configuration
+
+Common settings:
+
+| Variable | Purpose |
+| --- | --- |
+| `STOCK_LIST` | Base-analysis stock universe, comma-separated |
+| `V2_HK_SYMBOLS` / `V2_US_SYMBOLS` | Hong Kong and U.S. structured-report universes |
+| `LLM_CHANNELS` / `LITELLM_MODEL` | Model channels and model name |
+| `LONGBRIDGE_APP_KEY` / `LONGBRIDGE_APP_SECRET` / `LONGBRIDGE_ACCESS_TOKEN` | Realtime and valuation fields for Hong Kong and U.S. stocks |
+| `FINNHUB_API_KEYS` | U.S. earnings, estimates, and institutional data |
+| `TAVILY_API_KEYS` / `SERPAPI_API_KEYS` | News search |
+| `SOCIAL_SENTIMENT_API_KEY_FILE` | Local key file for U.S. social sentiment data |
+| `V2_SEC_USER_AGENT` | SEC EDGAR request identity |
+
+Notification settings are listed in `.env.notifications.example`; configure only the channels you use.
 
 ## Tests
 
@@ -160,12 +151,9 @@ python -m pytest tests -q
 python -m pytest v2/tests -q
 ```
 
-## Upstream project and license
+## License
 
-This repository retains the upstream MIT License and copyright notice. For the general feature set, full Web/API deployment, and support for other markets, see:
-
-- [ZhuLinsen/daily_stock_analysis](https://github.com/ZhuLinsen/daily_stock_analysis)
-- [Upstream README](https://github.com/ZhuLinsen/daily_stock_analysis/blob/main/README.md)
+[MIT License](LICENSE)
 
 ## Disclaimer
 
