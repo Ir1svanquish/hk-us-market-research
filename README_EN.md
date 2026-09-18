@@ -13,6 +13,7 @@ Key differences:
 - A focused Hong Kong and U.S. workflow with less unrelated configuration and runtime overhead
 - HKEX filings, board calendars, southbound flows, and HKD liquidity for Hong Kong research
 - SEC filings, earnings windows, company guidance, and U.S. macro events for U.S. research
+- Optional Reddit, X, and Polymarket sentiment for U.S. stocks, with summaries included in the analysis context and final report
 - Opportunity scores, data completeness, signal confidence, and standardized trade cards on top of the base decision dashboard
 - Cross-session state and 1/5/20-day validation for historical Top 5 signals
 - Separate mobile-friendly briefs and full research reports
@@ -24,6 +25,7 @@ Key differences:
 - Macro events from the Nasdaq U.S. economic calendar and BLS schedules, including CPI, PPI, labor, and central-bank events
 - Market state, index performance, sector rotation, prevailing themes, and next-session watch points
 - Technical structure, price and volume, fundamentals, news, risk alerts, and catalysts
+- Optional Reddit, X, and Polymarket buzz, sentiment, mention counts, and prediction-market activity for U.S. stocks
 - Event gates, opportunity scoring, trade cards, confidence levels, and cross-session state
 - Markdown, HTML, and PDF output
 
@@ -31,7 +33,7 @@ Key differences:
 
 ### Decision dashboard
 
-Each stock receives a core conclusion, suggested action, score, and trend, together with key price levels, risk alerts, catalysts, and recent developments. The report places data and events in one decision framework instead of listing news without context.
+Each stock receives a core conclusion, suggested action, score, and trend, together with key price levels, risk alerts, catalysts, and recent developments. When the U.S. sentiment source is configured, the report also includes Reddit, X, and Polymarket summaries. The report places data and events in one decision framework instead of listing news without context.
 
 ### Hong Kong and U.S. market review
 
@@ -126,6 +128,7 @@ Common settings:
 | `TUSHARE_TOKEN` | Optional Hong Kong fundamentals |
 | `LLM_CHANNELS` / `LITELLM_MODEL` | Model channels and model name |
 | `TAVILY_API_KEYS` / `SERPAPI_API_KEYS` | News search |
+| `SOCIAL_SENTIMENT_API_KEY_FILE` | Local key file for U.S. Reddit, X, and Polymarket sentiment data |
 | `V2_HK_SYMBOLS` / `V2_US_SYMBOLS` | Structured-report stock universe |
 | `V2_SEC_USER_AGENT` | SEC EDGAR request identity |
 
@@ -169,6 +172,17 @@ python -m v2.shadow_delivery --market hk --date YYYY-MM-DD --env-file .env.hk --
 ```
 
 For the U.S. workflow, replace `hk` and `.env.hk` with `us` and `.env.us`.
+
+## Current release boundary
+
+This repository currently focuses on command-line analysis, scheduled reports, and multi-channel delivery:
+
+- Decision dashboards, market reviews, structured reports, social sentiment, and notification channels are connected to the main pipeline
+- The Agent analysis framework and 11 built-in strategies are implemented and can be used by the analysis pipeline
+- Core `/ask`, `/chat`, and `/research` Bot commands are present, but no long-running Telegram or Discord Bot process is included
+- Image ticker extraction, CSV/Excel parsing, name completion, and portfolio import services have core implementations, but this release does not expose a complete Web/API entry point for them
+- The upstream Web/desktop workspace, FastAPI service, Docker deployment, and GitHub Actions workflows are not included and are therefore not advertised as ready-to-use features
+- The documented and verified release scope is Hong Kong and U.S. stocks; inherited A-share and ETF code is outside the primary scope of this repository
 
 ## Tests
 
