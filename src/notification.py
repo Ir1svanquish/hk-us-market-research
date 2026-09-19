@@ -973,11 +973,15 @@ class NotificationService(
                 
                 # ========== 数据透视 ==========
                 data_persp = dashboard.get('data_perspective', {}) if dashboard else {}
-                if data_persp:
-                    trend_data = data_persp.get('trend_status', {})
-                    price_data = data_persp.get('price_position', {})
-                    vol_data = data_persp.get('volume_analysis', {})
-                    chip_data = data_persp.get('chip_structure', {})
+                if isinstance(data_persp, dict) and data_persp:
+                    trend_value = data_persp.get('trend_status', {})
+                    price_value = data_persp.get('price_position', {})
+                    volume_value = data_persp.get('volume_analysis', {})
+                    chip_value = data_persp.get('chip_structure', {})
+                    trend_data = trend_value if isinstance(trend_value, dict) else {}
+                    price_data = price_value if isinstance(price_value, dict) else {}
+                    vol_data = volume_value if isinstance(volume_value, dict) else {}
+                    chip_data = chip_value if isinstance(chip_value, dict) else {}
                     
                     report_lines.extend([
                         f"### 📊 {labels['data_perspective_heading']}",

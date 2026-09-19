@@ -40,5 +40,9 @@ timeout 90m python3 -m reporting.daily_report \
   --market hk \
   --date "$MARKET_DAY" \
   --env-file .env.hk || report_status=$?
-touch "$MARKER_FILE"
+if [[ "$report_status" -eq 0 ]]; then
+  touch "$MARKER_FILE"
+else
+  echo "[$(date -u '+%F %T')] HK report delivery failed; completion marker not written"
+fi
 exit "$report_status"

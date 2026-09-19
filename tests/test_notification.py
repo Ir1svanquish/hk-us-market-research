@@ -293,6 +293,35 @@ class TestNotificationServiceReportGeneration(unittest.TestCase):
         self.assertNotIn("消息面", out)
 
     @mock.patch("src.notification.get_config")
+    def test_generate_dashboard_report_ignores_malformed_data_perspective_sections(
+        self, mock_get_config: mock.MagicMock
+    ):
+        mock_get_config.return_value = _make_config(report_renderer_enabled=False, report_language="zh-CN")
+        service = NotificationService()
+        result = AnalysisResult(
+            code="00700",
+            name="腾讯控股",
+            sentiment_score=68,
+            trend_prediction="震荡",
+            operation_advice="观望",
+            analysis_summary="等待趋势确认。",
+            dashboard={
+                "core_conclusion": {"one_sentence": "等待趋势确认。"},
+                "data_perspective": {
+                    "trend_status": "模型返回了非结构化趋势文本",
+                    "price_position": [],
+                    "volume_analysis": None,
+                    "chip_structure": "暂无",
+                },
+            },
+        )
+
+        out = service.generate_dashboard_report([result], report_date="2026-09-18")
+
+        self.assertIn("腾讯控股", out)
+        self.assertIn("等待趋势确认", out)
+
+    @mock.patch("src.notification.get_config")
     def test_generate_single_stock_report_localizes_english_fallback(self, mock_get_config: mock.MagicMock):
         mock_get_config.return_value = _make_config(report_renderer_enabled=False, report_language="en")
         service = NotificationService()
