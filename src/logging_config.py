@@ -15,6 +15,8 @@ import sys
 from datetime import datetime
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
+
+from src.log_redaction import redact_sensitive_text
 from typing import List, Optional
 
 
@@ -36,7 +38,7 @@ class RelativePathFormatter(logging.Formatter):
         except ValueError:
             # 如果无法转换为相对路径，保持原样
             pass
-        return super().format(record)
+        return redact_sensitive_text(super().format(record))
 
 
 

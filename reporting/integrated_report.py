@@ -2523,6 +2523,12 @@ def _top5_validation_page(
     rolling = node.get("rolling_20") if isinstance(node.get("rolling_20"), Mapping) else {}
     reporting_metrics = node.get("reporting_rolling_20") if isinstance(node.get("reporting_rolling_20"), Mapping) else {}
     comparison = node.get("comparison") if isinstance(node.get("comparison"), Mapping) else {}
+    validation = (
+        node.get("validation_comparison")
+        if isinstance(node.get("validation_comparison"), Mapping)
+        else comparison
+    )
+    verdict = node.get("quality_verdict") if isinstance(node.get("quality_verdict"), Mapping) else {}
     weight = node.get("weight_validation") if isinstance(node.get("weight_validation"), Mapping) else {}
     run = node.get("latest_reporting_run") if isinstance(node.get("latest_reporting_run"), Mapping) else {}
     name_map = {
@@ -2564,7 +2570,7 @@ def _top5_validation_page(
         <div class="validation-panel"><h3>报告评分 · 分数区间</h3><table><thead><tr><th>区间</th><th>样本</th><th>1日胜率</th><th>1日平均</th></tr></thead><tbody>{_validation_group_rows(node.get('by_score_band') or [])}</tbody></table></div>
         <div class="validation-panel"><h3>报告评分 · 信号类型</h3><table><thead><tr><th>类型</th><th>样本</th><th>1日胜率</th><th>1日平均</th></tr></thead><tbody>{_validation_group_rows(node.get('by_signal_type') or [])}</tbody></table></div>
       </div>
-      <div class="validation-note"><b>权重检查：</b>{_e(weight.get('decision') or '样本积累中')}。报告评分累计 {_e(str(reporting_metrics.get('periods') or 0))}期，符合触发条件 {_e(str(reporting_metrics.get('triggered') or 0))}/{_e(str(reporting_metrics.get('trigger_eligible') or 0))}，目标/止损命中 {_e(str(reporting_metrics.get('target_1_hits') or 0))}/{_e(str(reporting_metrics.get('stop_hits') or 0))}；同期 Top5 平均重合 {_e(_validation_value(comparison.get('average_overlap'), '%'))}，1日平均为分析阶段 {_e(_validation_value(comparison.get('analysis_average_1d'), '%', signed=True))} / 报告 {_e(_validation_value(comparison.get('reporting_average_1d'), '%', signed=True))}。</div>
+      <div class="validation-note"><b>权重检查：</b>{_e(weight.get('decision') or '样本积累中')}。报告评分累计 {_e(str(reporting_metrics.get('periods') or 0))}期，符合触发条件 {_e(str(reporting_metrics.get('triggered') or 0))}/{_e(str(reporting_metrics.get('trigger_eligible') or 0))}，目标/止损命中 {_e(str(reporting_metrics.get('target_1_hits') or 0))}/{_e(str(reporting_metrics.get('stop_hits') or 0))}；最近20期 Top5 平均重合 {_e(_validation_value(comparison.get('average_overlap'), '%'))}，1日平均为分析阶段 {_e(_validation_value(comparison.get('analysis_average_1d'), '%', signed=True))} / 报告 {_e(_validation_value(comparison.get('reporting_average_1d'), '%', signed=True))}；累计5日成熟配对 {_e(str(validation.get('paired_periods_5d') or 0))}/40，结论为 {_e(verdict.get('label') or '证据不足')}。</div>
       <div class="validation-run">{''.join(f'<span><small>{_e(label)}</small><b>{_e(_validation_value(value, suffix, 0))}</b></span>' for label, value, suffix in run_metrics)}</div>
     </section>"""
 

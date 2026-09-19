@@ -53,7 +53,8 @@ def build_validation_summary(
     node = (summary.get("markets") or {}).get(market) or {}
     rolling = node.get("rolling_20") or {}
     reporting_metrics = node.get("reporting_rolling_20") or {}
-    comparison = node.get("comparison") or {}
+    recent_comparison = node.get("comparison") or {}
+    validation_comparison = node.get("validation_comparison") or recent_comparison
     verdict = node.get("quality_verdict") or {}
     run = node.get("latest_reporting_run") or {}
     report_rows = _top5_contract_rows(contract, market)
@@ -72,7 +73,7 @@ def build_validation_summary(
     ) or "未生成"
     selected = [name_map.get(symbol) or symbol for symbol in report_symbols if symbol not in analysis_symbols]
     deselected = [name_map.get(symbol) or symbol for symbol in analysis_symbols if symbol not in report_symbols]
-    paired = int(comparison.get("paired_periods_5d") or 0)
+    paired = int(validation_comparison.get("paired_periods_5d") or 0)
     progress = min(100, paired / 40 * 100)
     lines = [
         f"📊 {label}分析与报告评分验证｜{report_date}",
@@ -84,7 +85,7 @@ def build_validation_summary(
         "",
         f"分析阶段滚动{rolling.get('periods', 0)}期：1日 {_fmt(rolling.get('average_return_1d'), signed=True)} / 胜率 {_fmt(rolling.get('win_rate_1d'))}；5日 {_fmt(rolling.get('average_return_5d'), signed=True)} / 胜率 {_fmt(rolling.get('win_rate_5d'))}",
         f"报告评分滚动{reporting_metrics.get('periods', 0)}期：1日 {_fmt(reporting_metrics.get('average_return_1d'), signed=True)} / 胜率 {_fmt(reporting_metrics.get('win_rate_1d'))}；触发 {reporting_metrics.get('triggered', 0)}/{reporting_metrics.get('trigger_eligible', 0)}，目标/止损 {reporting_metrics.get('target_1_hits', 0)}/{reporting_metrics.get('stop_hits', 0)}",
-        f"同期1日平均：分析 {_fmt(comparison.get('analysis_average_1d'), signed=True)} / 报告 {_fmt(comparison.get('reporting_average_1d'), signed=True)}",
+        f"最近20期同期1日平均：分析 {_fmt(recent_comparison.get('analysis_average_1d'), signed=True)} / 报告 {_fmt(recent_comparison.get('reporting_average_1d'), signed=True)}",
         f"质量：官方/相对强弱/量能覆盖 {_fmt(run.get('official_coverage'))}/{_fmt(run.get('relative_strength_coverage'))}/{_fmt(run.get('volume_coverage'))}",
         "权重：样本达标前维持35/25/20/15/5。初步判断约5周，较可靠结论约8–12周。",
     ]

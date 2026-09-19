@@ -38,9 +38,10 @@ if [[ -n "$CLOSE_ET_EPOCH" ]] && [[ "$NOW_EPOCH" -lt "$TARGET_EPOCH" ]]; then
 fi
 
 source .venv/bin/activate
-cp .env.us .env
+ENV_FILE="$PWD/.env.us"
+export ENV_FILE
 set -a
-source .env
+source "$ENV_FILE"
 # one-shot cron 模式：main.py 完成数据分析阶段且不发送通知；正式报告由 reporting.daily_report 交付
 export SCHEDULE_ENABLED=false
 export SCHEDULE_RUN_IMMEDIATELY=false

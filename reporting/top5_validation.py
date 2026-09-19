@@ -588,10 +588,13 @@ class Top5ValidationLedger:
             "components": diagnostics,
         }
 
-    def _comparison(self, market: str) -> dict[str, Any]:
-        runs = [dict(row) for row in self.connection.execute(
-            "SELECT * FROM reporting_run_audits WHERE market=? ORDER BY as_of DESC LIMIT 20", (market,)
-        )]
+    def _comparison(self, market: str, *, limit: int | None = 20) -> dict[str, Any]:
+        query = "SELECT * FROM reporting_run_audits WHERE market=? ORDER BY as_of DESC"
+        params: tuple[Any, ...] = (market,)
+        if limit is not None:
+            query += " LIMIT ?"
+            params = (market, limit)
+        runs = [dict(row) for row in self.connection.execute(query, params)]
         comparable = [row for row in runs if row.get("overlap_count") is not None]
         analysis = { (row["as_of"], row["symbol"]): row for row in self._rows(market, "analysis") }
         reporting = { (row["as_of"], row["symbol"]): row for row in self._rows(market, "reporting") }
@@ -717,7 +720,8 @@ class Top5ValidationLedger:
             "periods": len({row["as_of"] for row in reporting_rows}),
             **self._metric_summary(reporting_rows),
         }
-        comparison = self._comparison(market)
+        recent_comparison = self._comparison(market, limit=20)
+        validation_comparison = self._comparison(market, limit=None)
         weight_validation = self._weight_validation(market)
         return {
             "market": market,
@@ -738,10 +742,11 @@ class Top5ValidationLedger:
             "reporting_rolling_20": reporting_metrics,
             "by_score_band": self._group_metrics(reporting_rows, "score_band"),
             "by_signal_type": self._group_metrics(reporting_rows, "signal_type"),
-            "comparison": comparison,
+            "comparison": recent_comparison,
+            "validation_comparison": validation_comparison,
             "weight_validation": weight_validation,
             "quality_verdict": self._quality_verdict(
-                comparison, rolling_metrics, reporting_metrics, weight_validation
+                validation_comparison, rolling_metrics, reporting_metrics, weight_validation
             ),
             "latest_reporting_run": latest_run,
         }
@@ -765,13 +770,16 @@ def render_markdown(summary: Mapping[str, Any]) -> str:
         rolling = node.get("rolling_20") or {}
         reporting = node.get("reporting_rolling_20") or {}
         comparison = node.get("comparison") or {}
+        validation = node.get("validation_comparison") or comparison
+        verdict = node.get("quality_verdict") or {}
         weight = node.get("weight_validation") or {}
         lines.extend(
             [
                 f"## {label}", "",
                 f"- 正式基线：{rolling.get('periods', 0)}期 / {rolling.get('signals', 0)}条；1日胜率 {rolling.get('win_rate_1d')}%，平均 {rolling.get('average_return_1d')}%。",
                 f"- 报告评分：{reporting.get('periods', 0)}期 / {reporting.get('signals', 0)}条；触发 {reporting.get('triggered', 0)}/{reporting.get('trigger_eligible', 0)}。",
-                f"- 同期对比：{comparison.get('periods', 0)}期；Top5平均重合 {comparison.get('average_overlap')}%。",
+                f"- 最近20期对比：{comparison.get('periods', 0)}期；Top5平均重合 {comparison.get('average_overlap')}%。",
+                f"- 累计验证：{validation.get('periods', 0)}期；5日成熟配对 {validation.get('paired_periods_5d', 0)}/40；{verdict.get('label') or '证据不足'}。",
                 f"- 权重结论：{weight.get('decision')}。", "",
             ]
         )

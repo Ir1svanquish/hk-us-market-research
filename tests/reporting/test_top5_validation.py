@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from datetime import date, timedelta
 import sqlite3
 import tempfile
 import unittest
@@ -131,6 +132,53 @@ class Top5ValidationTests(unittest.TestCase):
         self.assertFalse(weight["ready_to_adjust"])
         self.assertIn("维持35/25/20/15/5", weight["decision"])
         self.assertEqual(summary["quality_verdict"]["status"], "insufficient_evidence")
+
+    def test_database_summary_uses_all_periods_for_quality_verdict(self) -> None:
+        """The 20-period display window must not cap the 40-period validation gate."""
+        components = json.dumps({
+            "price_structure": 1,
+            "relative_strength_sector": 1,
+            "volume_confirmation": 1,
+            "volatility_risk": 1,
+            "auxiliary_indicators": 1,
+        })
+        for period in range(60):
+            as_of = (date(2025, 1, 1) + timedelta(days=period)).isoformat()
+            self.ledger.connection.execute(
+                """
+                INSERT INTO reporting_run_audits (
+                    run_id, as_of, market, model_version, pool_size, top5_json,
+                    overlap_count, overlap_ratio, created_at, updated_at
+                ) VALUES (?, ?, 'hk', 'test-model', 2, '[]', 1, 50.0, ?, ?)
+                """,
+                (f"run-{period}", as_of, as_of, as_of),
+            )
+            for symbol in ("AAA", "BBB"):
+                for source_kind, return_5d, mae in (
+                    ("analysis", 0.0, -2.0),
+                    ("reporting", 1.0, -1.0),
+                ):
+                    self.ledger.connection.execute(
+                        """
+                        INSERT INTO opportunity_validation_snapshots (
+                            record_id, as_of, market, symbol, source_kind,
+                            model_version, is_top5, technical_components_json,
+                            return_5d, max_adverse_excursion, created_at, updated_at
+                        ) VALUES (?, ?, 'hk', ?, ?, 'test-model', 1, ?, ?, ?, ?, ?)
+                        """,
+                        (
+                            f"{source_kind}-{period}-{symbol}", as_of, symbol,
+                            source_kind, components, return_5d, mae, as_of, as_of,
+                        ),
+                    )
+        self.ledger.connection.commit()
+
+        summary = self.ledger.build_market_summary("hk", "2025-03-31")
+
+        self.assertEqual(summary["comparison"]["periods"], 20)
+        self.assertEqual(summary["validation_comparison"]["periods"], 60)
+        self.assertEqual(summary["validation_comparison"]["paired_periods_5d"], 60)
+        self.assertEqual(summary["quality_verdict"]["status"], "reporting_better")
 
     def test_quality_verdict_requires_positive_interval_and_non_worse_risk(self) -> None:
         verdict = self.ledger._quality_verdict(
