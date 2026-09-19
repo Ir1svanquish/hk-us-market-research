@@ -38,9 +38,9 @@ dist/
 /deliveries/
 /media/
 /tmp/
-v2/cache/
-v2/output/
-v2/state/
+reporting/cache/
+reporting/output/
+reporting/state/
 *.pdf
 
 # Test and editor artifacts
@@ -54,4 +54,4 @@ htmlcov/
 Thumbs.db
 
 # Local research inputs
-v2/data/earnings_research_*.json
+reporting/data/earnings_research_*.json

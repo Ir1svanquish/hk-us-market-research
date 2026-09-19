@@ -1760,7 +1760,7 @@ class StockAnalysisPipeline:
                     if channel == NotificationChannel.FEISHU:
                         non_wechat_success = self.notifier.send_to_feishu(report) or non_wechat_success
                     elif channel == NotificationChannel.TELEGRAM:
-                        logger.info("旧版 pipeline Telegram 详细正文推送已禁用，跳过；统一由 main.py 简洁展示层发送")
+                        logger.info("pipeline Telegram 详细正文推送已禁用，跳过；统一由 main.py 简洁展示层发送")
                         continue
                     elif channel == NotificationChannel.EMAIL:
                         if stock_email_groups:

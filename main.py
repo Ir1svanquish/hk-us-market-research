@@ -505,11 +505,11 @@ def run_full_analysis(
                 market_report = review_result
 
         # Issue #190: 合并推送（个股+大盘复盘）
-        background_comparison_only = os.getenv("BACKGROUND_COMPARISON_ONLY", "").strip().lower() in {
+        analysis_stage_only = os.getenv("ANALYSIS_STAGE_ONLY", "").strip().lower() in {
             "1", "true", "yes", "on"
         }
         if merge_notification and (results or market_report) and (
-            not args.no_notify or background_comparison_only
+            not args.no_notify or analysis_stage_only
         ):
             parts = []
             if market_report:
@@ -561,21 +561,16 @@ def run_full_analysis(
                             logger.warning(f"compact report 转 PDF 失败，邮件将回退为无附件: {pdf_exc}")
                             pdf_filepath = None
 
-                        if background_comparison_only:
+                        if analysis_stage_only:
                             used_compact_formatter = True
-                            logger.info("旧版报告仅用于后台配对：产物已生成，跳过全部外部通知")
+                            logger.info("分析阶段产物已生成，跳过外部通知；后续由正式报告入口统一交付")
                         else:
                             telegram_sent = False
                             telegram_available = getattr(pipeline.notifier, '_is_telegram_configured', lambda: False)()
-                            dual_shadow_mode = os.getenv("DUAL_SHADOW_REPORT_MODE", "").strip().lower() in {
-                                "1", "true", "yes", "on"
-                            }
                             if telegram_available:
                                 telegram_sent = pipeline.notifier.send_to_telegram(brief_content)
-                                if telegram_sent and not dual_shadow_mode:
+                                if telegram_sent:
                                     telegram_sent = pipeline.notifier.send_telegram_document(compact_filepath, caption='完整 Markdown 报告')
-                                elif telegram_sent:
-                                    logger.info("影子对比模式：旧版 Markdown 附件由双 PDF 交付替代")
 
                             email_sent = False
                             email_available = getattr(pipeline.notifier, '_is_email_configured', lambda: False)()
@@ -594,9 +589,9 @@ def run_full_analysis(
                                 used_compact_formatter = True
                                 logger.info("已使用简洁展示层推送（Telegram 摘要 + Markdown/PDF 附件）")
                             else:
-                                logger.warning("简洁展示层推送失败，准备回退旧版发送逻辑")
+                                logger.warning("简洁展示层推送失败，准备回退标准发送逻辑")
                     except Exception as formatter_exc:
-                        logger.warning(f"简洁展示层推送失败，回退旧版逻辑: {formatter_exc}")
+                        logger.warning(f"简洁展示层推送失败，回退标准发送逻辑: {formatter_exc}")
 
                     if not used_compact_formatter:
                         if pipeline.notifier.send(combined_content, email_send_to_all=True):
@@ -809,14 +804,14 @@ def main() -> int:
     if args.webui_only:
         args.serve_only = True
 
-    # 兼容旧版 WEBUI_ENABLED 环境变量
+    # 兼容历史 WEBUI_ENABLED 环境变量
     if config.webui_enabled and not (args.serve or args.serve_only):
         args.serve = True
 
     # === 启动 Web 服务 (如果启用) ===
     start_serve = (args.serve or args.serve_only) and os.getenv("GITHUB_ACTIONS") != "true"
 
-    # 兼容旧版 WEBUI_HOST/WEBUI_PORT：如果用户未通过 --host/--port 指定，则使用旧变量
+    # 兼容历史 WEBUI_HOST/WEBUI_PORT：如果用户未通过 --host/--port 指定，则使用这些变量
     if start_serve:
         if args.host == '0.0.0.0' and os.getenv('WEBUI_HOST'):
             args.host = os.getenv('WEBUI_HOST')

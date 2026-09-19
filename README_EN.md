@@ -78,14 +78,15 @@ Copy-Item .env.us.example .env.us
 
 ### 3. Run
 
-Test the base analysis without notifications:
+Build a Hong Kong formal report without sending notifications:
 
 ```bash
 cp .env.hk .env
-python main.py --no-notify
+ANALYSIS_STAGE_ONLY=true python main.py --no-notify
+python -m reporting.daily_report --market hk --env-file .env.hk --dry-run
 ```
 
-Complete Linux server workflows:
+For U.S. stocks, replace `hk` and `.env.hk` with `us` and `.env.us`. Linux servers can also run the complete workflow directly:
 
 ```bash
 ./run_hk_once.sh
@@ -131,22 +132,21 @@ Common settings:
 
 | Variable | Purpose |
 | --- | --- |
-| `STOCK_LIST` | Base-analysis stock universe, comma-separated |
-| `V2_HK_SYMBOLS` / `V2_US_SYMBOLS` | Hong Kong and U.S. structured-report universes |
+| `STOCK_LIST` | Analysis-stage stock universe, comma-separated |
+| `REPORT_HK_SYMBOLS` / `REPORT_US_SYMBOLS` | Hong Kong and U.S. formal-report universes |
 | `LLM_CHANNELS` / `LITELLM_MODEL` | Model channels and model name |
 | `LONGBRIDGE_APP_KEY` / `LONGBRIDGE_APP_SECRET` / `LONGBRIDGE_ACCESS_TOKEN` | Realtime and valuation fields for Hong Kong and U.S. stocks |
 | `FINNHUB_API_KEYS` | U.S. earnings, estimates, and institutional data |
 | `TAVILY_API_KEYS` / `SERPAPI_API_KEYS` | News search |
 | `SOCIAL_SENTIMENT_API_KEY_FILE` | Local key file for U.S. social sentiment data |
-| `V2_SEC_USER_AGENT` | SEC EDGAR request identity |
+| `SEC_USER_AGENT` | SEC EDGAR request identity |
 
 Notification settings are listed in `.env.notifications.example`; configure only the channels you use.
 
 ## Tests
 
 ```bash
-python -m pytest tests -q
-python -m pytest v2/tests -q
+python -m pytest -q
 ```
 
 ## License

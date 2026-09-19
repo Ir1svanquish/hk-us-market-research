@@ -1091,8 +1091,8 @@ class AgentOrchestrator:
             v = primary_dict.get(primary_key)
             if v is not None:
                 return v
-            v2 = fallback_dict.get(fallback_key, default)
-            return v2 if v2 is not None else default
+            fallback_value = fallback_dict.get(fallback_key, default)
+            return fallback_value if fallback_value is not None else default
 
         if isinstance(realtime, dict) or trend_dict:
             data_perspective["price_position"] = {

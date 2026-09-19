@@ -1,8 +1,0 @@
-# This file belongs only to the isolated V2 experiment.
-# Copy values into the shell environment; the production .env files are not read.
-
-V2_HK_SYMBOLS=hk00700,hk00981
-V2_US_SYMBOLS=AAPL,NVDA
-V2_SEC_USER_AGENT=hk-us-market-research your-contact@example.com
-# Or let the V2 CLI read EMAIL_SENDER from a local env file with
-# --sec-contact-env-file .env.us (the address is not copied or printed).

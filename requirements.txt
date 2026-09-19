@@ -41,6 +41,6 @@ jinja2>=3.1.0
 imgkit>=1.2.0
 lark-oapi>=1.0.0
 
-# PDF / V2
+# PDF report generation
 pypdf>=6.0,<7.0
 weasyprint>=69.0,<70.0

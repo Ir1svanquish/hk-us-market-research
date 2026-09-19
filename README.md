@@ -78,14 +78,15 @@ Copy-Item .env.us.example .env.us
 
 ### 3. 运行
 
-先测试基础分析，不发送通知：
+先生成一份港股正式报告，不发送通知：
 
 ```bash
 cp .env.hk .env
-python main.py --no-notify
+ANALYSIS_STAGE_ONLY=true python main.py --no-notify
+python -m reporting.daily_report --market hk --env-file .env.hk --dry-run
 ```
 
-Linux 服务器可直接运行完整流程：
+美股将 `hk` 和 `.env.hk` 分别改为 `us` 和 `.env.us`。Linux 服务器也可以直接运行完整流程：
 
 ```bash
 ./run_hk_once.sh
@@ -131,22 +132,21 @@ PDF 输出依赖 WeasyPrint，安装方式见 [官方文档](https://doc.courtbo
 
 | 配置 | 用途 |
 | --- | --- |
-| `STOCK_LIST` | 基础分析股票池，多个代码用逗号分隔 |
-| `V2_HK_SYMBOLS` / `V2_US_SYMBOLS` | 港股 / 美股结构化报告股票池 |
+| `STOCK_LIST` | 分析阶段股票池，多个代码用逗号分隔 |
+| `REPORT_HK_SYMBOLS` / `REPORT_US_SYMBOLS` | 港股 / 美股正式报告股票池 |
 | `LLM_CHANNELS` / `LITELLM_MODEL` | 模型渠道和模型名称 |
 | `LONGBRIDGE_APP_KEY` / `LONGBRIDGE_APP_SECRET` / `LONGBRIDGE_ACCESS_TOKEN` | 港美股实时行情和估值字段 |
 | `FINNHUB_API_KEYS` | 美股财报、预期和机构数据 |
 | `TAVILY_API_KEYS` / `SERPAPI_API_KEYS` | 新闻搜索 |
 | `SOCIAL_SENTIMENT_API_KEY_FILE` | 美股社交舆情服务的本地密钥文件 |
-| `V2_SEC_USER_AGENT` | SEC EDGAR 请求标识 |
+| `SEC_USER_AGENT` | SEC EDGAR 请求标识 |
 
 通知渠道字段见 `.env.notifications.example`，只需配置实际使用的渠道。
 
 ## 测试
 
 ```bash
-python -m pytest tests -q
-python -m pytest v2/tests -q
+python -m pytest -q
 ```
 
 ## License

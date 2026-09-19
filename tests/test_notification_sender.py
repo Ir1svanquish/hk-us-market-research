@@ -328,7 +328,7 @@ class TestEmailSender(unittest.TestCase):
 
         result = sender.send_to_email(
             "更新公告",
-            subject="V2 更新公告",
+            subject="报告更新公告",
             high_importance=True,
         )
 
