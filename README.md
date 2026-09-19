@@ -76,8 +76,6 @@ Copy-Item .env.hk.example .env.hk
 Copy-Item .env.us.example .env.us
 ```
 
-仓库中的 `.env*.example` 都是空白模板，不含真实密钥。填写后的 `.env`、`.env.hk`、`.env.us` 和本地密钥文件不会被 Git 跟踪。
-
 ### 3. 运行
 
 先测试基础分析，不发送通知：

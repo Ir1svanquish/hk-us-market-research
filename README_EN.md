@@ -76,8 +76,6 @@ Copy-Item .env.hk.example .env.hk
 Copy-Item .env.us.example .env.us
 ```
 
-The committed `.env*.example` files are blank templates and contain no credentials. Filled `.env`, `.env.hk`, `.env.us`, and local key files are not tracked by Git.
-
 ### 3. Run
 
 Test the base analysis without notifications:
